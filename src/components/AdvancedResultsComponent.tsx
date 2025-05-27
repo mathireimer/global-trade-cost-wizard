@@ -2,16 +2,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Calculator, TrendingUp, DollarSign } from 'lucide-react';
+import { Calculator, TrendingUp, DollarSign, Target, Zap } from 'lucide-react';
 import { CostData } from '@/types/costTypes';
-import { calculateCosts, formatCurrency } from '@/utils/costCalculations';
+import { calculateAdvancedCosts, formatCurrency } from '@/utils/advancedCostCalculations';
 
-interface ResultadosCalculadoraProps {
+interface AdvancedResultsComponentProps {
   costData: CostData;
 }
 
-const ResultadosCalculadora = ({ costData }: ResultadosCalculadoraProps) => {
-  const calculations = calculateCosts(costData);
+const AdvancedResultsComponent = ({ costData }: AdvancedResultsComponentProps) => {
+  const calculations = calculateAdvancedCosts(costData);
   
   const components = [
     { name: 'CD', label: 'Costos Directos', value: calculations.CD, color: 'bg-blue-500' },
@@ -31,10 +31,10 @@ const ResultadosCalculadora = ({ costData }: ResultadosCalculadoraProps) => {
       <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
         <CardTitle className="flex items-center gap-3">
           <Calculator className="h-6 w-6" />
-          Resultados del Cálculo
+          Resultados del Modelo Avanzado
         </CardTitle>
         <p className="text-blue-100 text-sm">
-          Costo de Adquisición en Importación (CAI)
+          CAI = Σ(i=1 to n) [Ci × (1 + Ri) × Wi] × Fo × Fe
         </p>
       </CardHeader>
       
@@ -49,8 +49,31 @@ const ResultadosCalculadora = ({ costData }: ResultadosCalculadoraProps) => {
             {formatCurrency(calculations.CAI)}
           </div>
           <Badge variant="secondary" className="text-xs">
-            Costo Total de Adquisición
+            Costo Total de Adquisición Optimizado
           </Badge>
+        </div>
+
+        {/* Key Metrics */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="text-center p-3 bg-green-50 rounded-lg border">
+            <div className="flex items-center justify-center mb-1">
+              <Zap className="h-4 w-4 text-green-600 mr-1" />
+            </div>
+            <div className="text-lg font-bold text-green-600">
+              {calculations.optimizationSavings.toFixed(1)}%
+            </div>
+            <div className="text-xs text-green-700">Ahorro por Optimización</div>
+          </div>
+          
+          <div className="text-center p-3 bg-orange-50 rounded-lg border">
+            <div className="flex items-center justify-center mb-1">
+              <Target className="h-4 w-4 text-orange-600 mr-1" />
+            </div>
+            <div className="text-lg font-bold text-orange-600">
+              {formatCurrency(calculations.VCIF)}
+            </div>
+            <div className="text-xs text-orange-700">Valor CIF</div>
+          </div>
         </div>
 
         {/* Components Breakdown */}
@@ -89,37 +112,32 @@ const ResultadosCalculadora = ({ costData }: ResultadosCalculadoraProps) => {
           ))}
         </div>
 
-        {/* Formula Reference */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg border">
-          <h4 className="font-semibold text-gray-900 mb-2">Fórmula Aplicada:</h4>
-          <p className="text-sm text-gray-700 font-mono">
-            CAI = CD + CTI + CAT + CSG + COF + CF
-          </p>
-          <p className="text-xs text-gray-500 mt-2">
-            Modelo metodológico integral para determinación sistemática del costo de adquisición en importaciones
+        {/* CAI Ajustado por Riesgo */}
+        <div className="p-4 bg-red-50 rounded-lg border">
+          <h4 className="font-semibold text-red-900 mb-2">CAI Ajustado por Riesgo:</h4>
+          <div className="text-xl font-bold text-red-600">
+            {formatCurrency(calculations.riskAdjustedCAI)}
+          </div>
+          <p className="text-xs text-red-700 mt-1">
+            Incluye promedio de factores de riesgo
           </p>
         </div>
 
-        {/* Key Metrics */}
-        {calculations.CAI > 0 && (
-          <div className="grid grid-cols-2 gap-4 mt-6">
-            <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-lg font-bold text-green-600">
-                {((calculations.CD / calculations.CAI) * 100).toFixed(1)}%
-              </div>
-              <div className="text-xs text-green-700">Costos Directos</div>
-            </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-lg font-bold text-purple-600">
-                {((calculations.CAT / calculations.CAI) * 100).toFixed(1)}%
-              </div>
-              <div className="text-xs text-purple-700">Impuestos y Aranceles</div>
-            </div>
+        {/* Formula Reference */}
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg border">
+          <h4 className="font-semibold text-gray-900 mb-2">Modelo Matemático:</h4>
+          <div className="space-y-1 text-xs font-mono text-gray-700">
+            <p>CD = PFOB × (1 + τe) × (1 + δ) × γq</p>
+            <p>CTI = [FB × (1 + βc) × λd × ψm] × (1 + μs)</p>
+            <p>CAT = VCIF × [τa × (1 + ηp)] + [(VCIF + Aranceles) × τv] + ΣTf</p>
+            <p>CSG = VCIF × σ × (1 + α × κ) × Θ + Σsg</p>
+            <p>COF = [Cia + Ca × t + Cd] × (1 + if × tp) × νe</p>
+            <p>CF = (Σ C1-C5) × φ × ρ × ωv</p>
           </div>
-        )}
+        </div>
       </CardContent>
     </Card>
   );
 };
 
-export default ResultadosCalculadora;
+export default AdvancedResultsComponent;

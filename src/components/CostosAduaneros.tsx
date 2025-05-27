@@ -4,13 +4,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FileText, Percent, Receipt } from 'lucide-react';
 import { CostData } from '@/types/costTypes';
+import { calculateAdvancedCosts } from '@/utils/advancedCostCalculations';
 
 interface CostosAduanerosProps {
   costData: CostData;
-  updateCostData: (field: keyof CostData, value: number) => void;
+  updateBasicInputs: (field: string, value: number) => void;
+  updateAdvancedFactors: (field: string, value: number) => void;
 }
 
-const CostosAduaneros = ({ costData, updateCostData }: CostosAduanerosProps) => {
+const CostosAduaneros = ({ costData, updateBasicInputs, updateAdvancedFactors }: CostosAduanerosProps) => {
+  const calculations = calculateAdvancedCosts(costData);
+  
   return (
     <Card className="border-l-4 border-l-purple-500 shadow-lg hover:shadow-xl transition-shadow duration-300">
       <CardHeader className="bg-purple-50">
@@ -19,7 +23,7 @@ const CostosAduaneros = ({ costData, updateCostData }: CostosAduanerosProps) => 
           Costos Aduaneros y Tributarios (CAT)
         </CardTitle>
         <p className="text-sm text-purple-600">
-          CAT = (Valor CIF × Tasa Arancelaria) + (Valor CIF + Aranceles) × Tasa IVA + Tasas Aduaneras Fijas
+          CAT = VCIF × [τa × (1 + ηp)] + [(VCIF + Aranceles) × τv] + ΣTf
         </p>
       </CardHeader>
       <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-6">
@@ -33,11 +37,10 @@ const CostosAduaneros = ({ costData, updateCostData }: CostosAduanerosProps) => 
             type="number"
             step="0.01"
             min="0"
-            value={costData.valorCIF || ''}
-            onChange={(e) => updateCostData('valorCIF', parseFloat(e.target.value) || 0)}
-            placeholder="0.00"
+            value={calculations.VCIF.toFixed(2)}
             className="text-right bg-gray-50"
-            title="Se calcula automáticamente: FOB + Costos de Transporte"
+            title="Se calcula automáticamente: FOB + Costos de Transporte + Seguros"
+            readOnly
           />
           <p className="text-xs text-gray-500">Se calcula automáticamente</p>
         </div>
@@ -53,8 +56,8 @@ const CostosAduaneros = ({ costData, updateCostData }: CostosAduanerosProps) => 
             step="0.01"
             min="0"
             max="100"
-            value={costData.tasaArancelaria || ''}
-            onChange={(e) => updateCostData('tasaArancelaria', parseFloat(e.target.value) || 0)}
+            value={costData.basicInputs.tasaArancelaria || ''}
+            onChange={(e) => updateBasicInputs('tasaArancelaria', parseFloat(e.target.value) || 0)}
             placeholder="0.00"
             className="text-right"
           />
@@ -68,8 +71,8 @@ const CostosAduaneros = ({ costData, updateCostData }: CostosAduanerosProps) => 
             step="0.01"
             min="0"
             max="100"
-            value={costData.tasaIVA || ''}
-            onChange={(e) => updateCostData('tasaIVA', parseFloat(e.target.value) || 0)}
+            value={costData.basicInputs.tasaIVA || ''}
+            onChange={(e) => updateBasicInputs('tasaIVA', parseFloat(e.target.value) || 0)}
             placeholder="19.00"
             className="text-right"
           />
@@ -82,8 +85,8 @@ const CostosAduaneros = ({ costData, updateCostData }: CostosAduanerosProps) => 
             type="number"
             step="0.01"
             min="0"
-            value={costData.tasasAduanerasFijas || ''}
-            onChange={(e) => updateCostData('tasasAduanerasFijas', parseFloat(e.target.value) || 0)}
+            value={costData.advancedFactors.tasasFijasAduaneras || ''}
+            onChange={(e) => updateAdvancedFactors('tasasFijasAduaneras', parseFloat(e.target.value) || 0)}
             placeholder="0.00"
             className="text-right"
           />

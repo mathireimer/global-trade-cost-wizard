@@ -7,10 +7,10 @@ import { CostData } from '@/types/costTypes';
 
 interface CostosOperativosProps {
   costData: CostData;
-  updateCostData: (field: keyof CostData, value: number) => void;
+  updateAdvancedFactors: (field: string, value: number) => void;
 }
 
-const CostosOperativos = ({ costData, updateCostData }: CostosOperativosProps) => {
+const CostosOperativos = ({ costData, updateAdvancedFactors }: CostosOperativosProps) => {
   return (
     <Card className="border-l-4 border-l-indigo-500 shadow-lg hover:shadow-xl transition-shadow duration-300">
       <CardHeader className="bg-indigo-50">
@@ -19,7 +19,7 @@ const CostosOperativos = ({ costData, updateCostData }: CostosOperativosProps) =
           Costos Operativos y Financieros (COF)
         </CardTitle>
         <p className="text-sm text-indigo-600">
-          COF = Intermediación Aduanera + Almacenamiento + Distribución Local + Costos Financieros
+          COF = [Cia + Ca × t + Cd] × (1 + if × tp) × νe
         </p>
       </CardHeader>
       <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-6">
@@ -33,8 +33,8 @@ const CostosOperativos = ({ costData, updateCostData }: CostosOperativosProps) =
             type="number"
             step="0.01"
             min="0"
-            value={costData.intermediacionAduanera || ''}
-            onChange={(e) => updateCostData('intermediacionAduanera', parseFloat(e.target.value) || 0)}
+            value={costData.advancedFactors.intermediacionAduanera || ''}
+            onChange={(e) => updateAdvancedFactors('intermediacionAduanera', parseFloat(e.target.value) || 0)}
             placeholder="0.00"
             className="text-right"
           />
@@ -43,15 +43,15 @@ const CostosOperativos = ({ costData, updateCostData }: CostosOperativosProps) =
         <div className="space-y-2">
           <Label htmlFor="almacenamiento" className="flex items-center gap-2">
             <Warehouse className="h-4 w-4" />
-            Almacenamiento (USD)
+            Almacenamiento/día (USD)
           </Label>
           <Input
             id="almacenamiento"
             type="number"
             step="0.01"
             min="0"
-            value={costData.almacenamiento || ''}
-            onChange={(e) => updateCostData('almacenamiento', parseFloat(e.target.value) || 0)}
+            value={costData.advancedFactors.almacenamientoPorDia || ''}
+            onChange={(e) => updateAdvancedFactors('almacenamientoPorDia', parseFloat(e.target.value) || 0)}
             placeholder="0.00"
             className="text-right"
           />
@@ -67,25 +67,25 @@ const CostosOperativos = ({ costData, updateCostData }: CostosOperativosProps) =
             type="number"
             step="0.01"
             min="0"
-            value={costData.distribucionLocal || ''}
-            onChange={(e) => updateCostData('distribucionLocal', parseFloat(e.target.value) || 0)}
+            value={costData.advancedFactors.distribucionLocal || ''}
+            onChange={(e) => updateAdvancedFactors('distribucionLocal', parseFloat(e.target.value) || 0)}
             placeholder="0.00"
             className="text-right"
           />
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="costosFinancieros" className="flex items-center gap-2">
+          <Label htmlFor="tasaInteresFinanciera" className="flex items-center gap-2">
             <CreditCard className="h-4 w-4" />
-            Costos Financieros (USD)
+            Tasa Interés Financiero (%)
           </Label>
           <Input
-            id="costosFinancieros"
+            id="tasaInteresFinanciera"
             type="number"
             step="0.01"
             min="0"
-            value={costData.costosFinancieros || ''}
-            onChange={(e) => updateCostData('costosFinancieros', parseFloat(e.target.value) || 0)}
+            value={costData.advancedFactors.tasaInteresFinanciera || ''}
+            onChange={(e) => updateAdvancedFactors('tasaInteresFinanciera', parseFloat(e.target.value) || 0)}
             placeholder="0.00"
             className="text-right"
           />
