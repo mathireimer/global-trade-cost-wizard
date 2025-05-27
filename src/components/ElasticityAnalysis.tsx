@@ -70,9 +70,9 @@ const ElasticityAnalysis = ({ costData }: ElasticityAnalysisProps) => {
         <div className="mt-6 p-4 bg-gray-50 rounded-lg">
           <h4 className="font-semibold text-gray-900 mb-2">Interpretación:</h4>
           <ul className="text-xs text-gray-700 space-y-1">
-            <li>• <strong>Elasticidad > 1:</strong> Alta sensibilidad</li>
+            <li>• <strong>Elasticidad &gt; 1:</strong> Alta sensibilidad</li>
             <li>• <strong>Elasticidad 0.5-1:</strong> Sensibilidad moderada</li>
-            <li>• <strong>Elasticidad < 0.5:</strong> Baja sensibilidad</li>
+            <li>• <strong>Elasticidad &lt; 0.5:</strong> Baja sensibilidad</li>
             <li>• <strong>Signo positivo:</strong> Relación directa</li>
             <li>• <strong>Signo negativo:</strong> Relación inversa</li>
           </ul>
