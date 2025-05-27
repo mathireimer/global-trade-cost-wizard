@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Truck, Fuel, Anchor, Crane } from 'lucide-react';
+import { Truck, Fuel, Anchor, Container } from 'lucide-react';
 import { CostData } from '@/types/costTypes';
 
 interface CostosTransporteProps {
@@ -76,7 +76,7 @@ const CostosTransporte = ({ costData, updateCostData }: CostosTransporteProps) =
         
         <div className="space-y-2">
           <Label htmlFor="manipulacionTerminal" className="flex items-center gap-2">
-            <Crane className="h-4 w-4" />
+            <Container className="h-4 w-4" />
             Manipulación Terminal (USD)
           </Label>
           <Input

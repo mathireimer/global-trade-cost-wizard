@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,8 +51,8 @@ const Index = () => {
       const newData = { ...prev, [field]: value };
       
       // Auto-calculate valorCIF when transport costs change
-      if (['precioFOB', 'fleteBase', 'recargosCombustible', 'tasasPortuarias', 'manipulacionTerminal'].includes(field)) {
-        const cti = newData.fleteBase + newData.recargosCombustible + newData.tasasPortuarias + newData.manipulacionTerminal;
+      if (['precioFOB', 'fleteBase', 'recargosCombustible', 'tarifasPortuarias', 'manipulacionTerminal'].includes(field)) {
+        const cti = newData.fleteBase + newData.recargosCombustible + newData.tarifasPortuarias + newData.manipulacionTerminal;
         newData.valorCIF = newData.precioFOB + cti;
       }
       
