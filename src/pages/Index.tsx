@@ -1,87 +1,161 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calculator, FileText, TrendingUp } from 'lucide-react';
-import CostosDirectos from '@/components/CostosDirectos';
-import CostosTransporte from '@/components/CostosTransporte';
-import CostosAduaneros from '@/components/CostosAduaneros';
-import CostosSeguros from '@/components/CostosSeguros';
-import CostosOperativos from '@/components/CostosOperativos';
-import CostosContingencia from '@/components/CostosContingencia';
-import ResultadosCalculadora from '@/components/ResultadosCalculadora';
+import { Calculator, FileText, TrendingUp, Brain } from 'lucide-react';
+import BasicInputsComponent from '@/components/BasicInputsComponent';
+import AdvancedFactorsComponent from '@/components/AdvancedFactorsComponent';
+import WeightsAndRisksComponent from '@/components/WeightsAndRisksComponent';
+import AdvancedResultsComponent from '@/components/AdvancedResultsComponent';
+import ElasticityAnalysis from '@/components/ElasticityAnalysis';
 import { CostData } from '@/types/costTypes';
 
 const Index = () => {
   const [costData, setCostData] = useState<CostData>({
-    // Costos Directos de Mercancía (CD)
-    precioFOB: 0,
-    embalaje: 0,
-    certificaciones: 0,
-    
-    // Costos de Transporte Internacional (CTI)
-    fleteBase: 0,
-    recargosCombustible: 0,
-    tarifasPortuarias: 0,
-    manipulacionTerminal: 0,
-    
-    // Costos Aduaneros y Tributarios (CAT)
-    valorCIF: 0,
-    tasaArancelaria: 0,
-    tasaIVA: 0,
-    tasasAduanerasFijas: 0,
-    
-    // Costos de Seguros y Garantías (CSG)
-    tasaSeguro: 0,
-    segurosAdicionales: 0,
-    garantiasAduaneras: 0,
-    
-    // Costos Operativos y Financieros (COF)
-    intermediacionAduanera: 0,
-    almacenamiento: 0,
-    distribucionLocal: 0,
-    costosFinancieros: 0,
-    
-    // Costos de Contingencia y Factores de Riesgo (CF)
-    contingencia: 0,
-    factoresRiesgo: 0
+    basicInputs: {
+      precioFOB: 50000,
+      distancia: 8000,
+      peso: 15,
+      tasaArancelaria: 12,
+      tasaIVA: 19
+    },
+    advancedFactors: {
+      tasaEmbalajeEspecial: 3,
+      factorCertificaciones: 2,
+      factorCalidad: 1.0,
+      fleteBase: 2500,
+      recargosCombustible: 15,
+      factorModalidad: 1.0,
+      factorEstacional: 5,
+      factorPenalizacion: 0,
+      tasasFijasAduaneras: 500,
+      tasaSeguroBase: 0.5,
+      factorRiesgoRuta: 1.2,
+      coeficientePeligrosidad: 1.0,
+      factorClimatico: 1.0,
+      segurosAdicionales: 300,
+      intermediacionAduanera: 800,
+      almacenamientoPorDia: 50,
+      distribucionLocal: 1200,
+      tasaInteresFinanciera: 8,
+      tiempoFinanciamiento: 30,
+      factorEficiencia: 0.95,
+      factorContingencia: 5,
+      factorVolatilidad: 1.1,
+      coeficienteVariabilidad: 1.05,
+      factorOptimizacion: 0.95,
+      factorEconomiasEscala: 0.98
+    },
+    componentWeights: {
+      w1: 1.0,
+      w2: 1.0,
+      w3: 1.0,
+      w4: 1.0,
+      w5: 1.0,
+      w6: 1.0
+    },
+    riskFactors: {
+      r1: 2,
+      r2: 5,
+      r3: 3,
+      r4: 4,
+      r5: 3,
+      r6: 8
+    }
   });
 
-  const updateCostData = (field: keyof CostData, value: number) => {
-    setCostData(prev => {
-      const newData = { ...prev, [field]: value };
-      
-      // Auto-calculate valorCIF when transport costs change
-      if (['precioFOB', 'fleteBase', 'recargosCombustible', 'tarifasPortuarias', 'manipulacionTerminal'].includes(field)) {
-        const cti = newData.fleteBase + newData.recargosCombustible + newData.tarifasPortuarias + newData.manipulacionTerminal;
-        newData.valorCIF = newData.precioFOB + cti;
+  const updateBasicInputs = (field: string, value: number) => {
+    setCostData(prev => ({
+      ...prev,
+      basicInputs: {
+        ...prev.basicInputs,
+        [field]: value
       }
-      
-      return newData;
-    });
+    }));
   };
 
-  const resetForm = () => {
+  const updateAdvancedFactors = (field: string, value: number) => {
+    setCostData(prev => ({
+      ...prev,
+      advancedFactors: {
+        ...prev.advancedFactors,
+        [field]: value
+      }
+    }));
+  };
+
+  const updateWeights = (field: string, value: number) => {
+    setCostData(prev => ({
+      ...prev,
+      componentWeights: {
+        ...prev.componentWeights,
+        [field]: value
+      }
+    }));
+  };
+
+  const updateRiskFactors = (field: string, value: number) => {
+    setCostData(prev => ({
+      ...prev,
+      riskFactors: {
+        ...prev.riskFactors,
+        [field]: value
+      }
+    }));
+  };
+
+  const resetToDefaults = () => {
     setCostData({
-      precioFOB: 0,
-      embalaje: 0,
-      certificaciones: 0,
-      fleteBase: 0,
-      recargosCombustible: 0,
-      tarifasPortuarias: 0,
-      manipulacionTerminal: 0,
-      valorCIF: 0,
-      tasaArancelaria: 0,
-      tasaIVA: 0,
-      tasasAduanerasFijas: 0,
-      tasaSeguro: 0,
-      segurosAdicionales: 0,
-      garantiasAduaneras: 0,
-      intermediacionAduanera: 0,
-      almacenamiento: 0,
-      distribucionLocal: 0,
-      costosFinancieros: 0,
-      contingencia: 0,
-      factoresRiesgo: 0
+      basicInputs: {
+        precioFOB: 50000,
+        distancia: 8000,
+        peso: 15,
+        tasaArancelaria: 12,
+        tasaIVA: 19
+      },
+      advancedFactors: {
+        tasaEmbalajeEspecial: 3,
+        factorCertificaciones: 2,
+        factorCalidad: 1.0,
+        fleteBase: 2500,
+        recargosCombustible: 15,
+        factorModalidad: 1.0,
+        factorEstacional: 5,
+        factorPenalizacion: 0,
+        tasasFijasAduaneras: 500,
+        tasaSeguroBase: 0.5,
+        factorRiesgoRuta: 1.2,
+        coeficientePeligrosidad: 1.0,
+        factorClimatico: 1.0,
+        segurosAdicionales: 300,
+        intermediacionAduanera: 800,
+        almacenamientoPorDia: 50,
+        distribucionLocal: 1200,
+        tasaInteresFinanciera: 8,
+        tiempoFinanciamiento: 30,
+        factorEficiencia: 0.95,
+        factorContingencia: 5,
+        factorVolatilidad: 1.1,
+        coeficienteVariabilidad: 1.05,
+        factorOptimizacion: 0.95,
+        factorEconomiasEscala: 0.98
+      },
+      componentWeights: {
+        w1: 1.0,
+        w2: 1.0,
+        w3: 1.0,
+        w4: 1.0,
+        w5: 1.0,
+        w6: 1.0
+      },
+      riskFactors: {
+        r1: 2,
+        r2: 5,
+        r3: 3,
+        r4: 4,
+        r5: 3,
+        r6: 8
+      }
     });
   };
 
@@ -91,48 +165,55 @@ const Index = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
-            <Calculator className="h-12 w-12 text-blue-600 mr-3" />
+            <Brain className="h-12 w-12 text-blue-600 mr-3" />
             <h1 className="text-4xl font-bold text-gray-900">
-              Calculadora de Costos de Importación
+              Modelo Matemático Avanzado CAI
             </h1>
           </div>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Herramienta profesional para calcular el Costo de Adquisición en Importación (CAI) 
-            mediante metodología integral de componentes interrelacionados
+          <p className="text-lg text-gray-600 max-w-4xl mx-auto">
+            Sistema de ecuaciones interrelacionadas para la determinación óptima del Costo de Adquisición en Importaciones
           </p>
+          <div className="mt-4 text-sm text-gray-500 font-mono">
+            CAI = Σ(i=1 to n) [Ci × (1 + Ri) × Wi] × Fo × Fe
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Form */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Costos Directos */}
-            <CostosDirectos costData={costData} updateCostData={updateCostData} />
+            {/* Inputs Básicos */}
+            <BasicInputsComponent 
+              basicInputs={costData.basicInputs} 
+              updateBasicInputs={updateBasicInputs} 
+            />
             
-            {/* Costos de Transporte */}
-            <CostosTransporte costData={costData} updateCostData={updateCostData} />
+            {/* Factores Avanzados */}
+            <AdvancedFactorsComponent 
+              advancedFactors={costData.advancedFactors} 
+              updateAdvancedFactors={updateAdvancedFactors} 
+            />
             
-            {/* Costos Aduaneros */}
-            <CostosAduaneros costData={costData} updateCostData={updateCostData} />
-            
-            {/* Costos de Seguros */}
-            <CostosSeguros costData={costData} updateCostData={updateCostData} />
-            
-            {/* Costos Operativos */}
-            <CostosOperativos costData={costData} updateCostData={updateCostData} />
-            
-            {/* Costos de Contingencia */}
-            <CostosContingencia costData={costData} updateCostData={updateCostData} />
+            {/* Pesos y Factores de Riesgo */}
+            <WeightsAndRisksComponent 
+              componentWeights={costData.componentWeights}
+              riskFactors={costData.riskFactors}
+              updateWeights={updateWeights}
+              updateRiskFactors={updateRiskFactors}
+            />
+
+            {/* Análisis de Elasticidad */}
+            <ElasticityAnalysis costData={costData} />
 
             {/* Action Buttons */}
             <div className="flex gap-4 justify-center">
               <Button 
-                onClick={resetForm}
+                onClick={resetToDefaults}
                 variant="outline"
                 size="lg"
                 className="flex items-center gap-2"
               >
                 <FileText className="h-4 w-4" />
-                Limpiar Formulario
+                Restaurar Valores por Defecto
               </Button>
             </div>
           </div>
@@ -140,7 +221,7 @@ const Index = () => {
           {/* Results Panel */}
           <div className="lg:col-span-1">
             <div className="sticky top-8">
-              <ResultadosCalculadora costData={costData} />
+              <AdvancedResultsComponent costData={costData} />
             </div>
           </div>
         </div>
@@ -150,11 +231,11 @@ const Index = () => {
           <div className="flex items-center justify-center mb-2">
             <TrendingUp className="h-5 w-5 text-blue-600 mr-2" />
             <span className="text-sm text-gray-600">
-              Modelo metodológico integral CAI = CD + CTI + CAT + CSG + COF + CF
+              Modelo con análisis de sensibilidad, optimización y gestión de riesgo integrada
             </span>
           </div>
           <p className="text-xs text-gray-500">
-            Basado en análisis de correlaciones y interrelaciones entre componentes de costo
+            Incluye factores de economías de escala, volatilidad del mercado y análisis predictivo
           </p>
         </div>
       </div>
