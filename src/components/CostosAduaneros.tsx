@@ -37,7 +37,7 @@ const CostosAduaneros = ({ costData, updateBasicInputs, updateAdvancedFactors }:
             type="number"
             step="0.01"
             min="0"
-            value={calculations.VCIF.toFixed(2)}
+            value={calculations.CIF.toFixed(2)}
             className="text-right bg-gray-50"
             title="Se calcula automáticamente: FOB + Costos de Transporte + Seguros"
             readOnly

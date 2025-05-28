@@ -47,6 +47,20 @@ const Index = () => {
       sigma2_TC: 10000,
       sigma2_GA: 40000,
       cov_CIF_TC: 15000
+    },
+    advancedFactors: {
+      fleteBase: 2000,
+      recargosCombustible: 15,
+      factorModalidad: 1.0,
+      factorEstacional: 0,
+      tasaSeguroBase: 0.5,
+      segurosAdicionales: 0,
+      factorRiesgoRuta: 1.0,
+      tasasFijasAduaneras: 0,
+      intermediacionAduanera: 500,
+      almacenamientoPorDia: 25,
+      distribucionLocal: 800,
+      tasaInteresFinanciera: 12
     }
   });
 
@@ -85,6 +99,16 @@ const Index = () => {
       ...prev,
       parametrosEstocasticos: {
         ...prev.parametrosEstocasticos,
+        [field]: value
+      }
+    }));
+  };
+
+  const updateAdvancedFactors = (field: string, value: number) => {
+    setCostData(prev => ({
+      ...prev,
+      advancedFactors: {
+        ...prev.advancedFactors,
         [field]: value
       }
     }));
@@ -130,6 +154,20 @@ const Index = () => {
         sigma2_TC: 10000,
         sigma2_GA: 40000,
         cov_CIF_TC: 15000
+      },
+      advancedFactors: {
+        fleteBase: 2000,
+        recargosCombustible: 15,
+        factorModalidad: 1.0,
+        factorEstacional: 0,
+        tasaSeguroBase: 0.5,
+        segurosAdicionales: 0,
+        factorRiesgoRuta: 1.0,
+        tasasFijasAduaneras: 0,
+        intermediacionAduanera: 500,
+        almacenamientoPorDia: 25,
+        distribucionLocal: 800,
+        tasaInteresFinanciera: 12
       }
     });
   };

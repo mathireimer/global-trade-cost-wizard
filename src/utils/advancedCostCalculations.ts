@@ -96,6 +96,49 @@ export const calculateAdvancedCosts = (data: CostData): ResultadosCalculo => {
   };
 };
 
+export const calculateElasticities = (data: CostData): number[][] => {
+  // Matriz de elasticidades simplificada para demostración
+  // Variables: [FOB, Arancel, IVA, Flete, Optimización]
+  // Componentes: [CD, CTI, CAT, CSG, COF]
+  const baseValues = calculateAdvancedCosts(data);
+  const elasticities: number[][] = [];
+  
+  const variables = [
+    'precioFOB',
+    'tasaArancelaria', 
+    'tasaIVA',
+    'porcentajeFlete',
+    'costoFijoFlete'
+  ];
+  
+  variables.forEach((variable, i) => {
+    elasticities[i] = [];
+    
+    // Simular elasticidades basadas en el tipo de variable
+    switch (variable) {
+      case 'precioFOB':
+        elasticities[i] = [1.0, 0.8, 0.9, 0.2, 0.1]; // Alta elasticidad en costos directos
+        break;
+      case 'tasaArancelaria':
+        elasticities[i] = [0.0, 0.1, 1.2, 0.0, 0.0]; // Alta elasticidad en CAT
+        break;
+      case 'tasaIVA':
+        elasticities[i] = [0.0, 0.1, 1.1, 0.0, 0.0]; // Alta elasticidad en CAT
+        break;
+      case 'porcentajeFlete':
+        elasticities[i] = [0.0, 1.0, 0.3, 0.1, 0.0]; // Alta elasticidad en CTI
+        break;
+      case 'costoFijoFlete':
+        elasticities[i] = [0.0, 0.8, 0.1, 0.0, 1.2]; // Alta elasticidad en COF
+        break;
+      default:
+        elasticities[i] = [0.0, 0.0, 0.0, 0.0, 0.0];
+    }
+  });
+  
+  return elasticities;
+};
+
 export const formatCurrency = (amount: number): string => {
   return new Intl.NumberFormat('es-ES', {
     style: 'currency',

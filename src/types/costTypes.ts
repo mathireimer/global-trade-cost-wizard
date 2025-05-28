@@ -62,11 +62,51 @@ export interface ParametrosEstocasticos {
   cov_CIF_TC: number;
 }
 
+export interface AdvancedFactors {
+  // Costos de Transporte
+  fleteBase: number;
+  recargosCombustible: number;
+  factorModalidad: number;
+  factorEstacional: number;
+  
+  // Costos de Seguros
+  tasaSeguroBase: number;
+  segurosAdicionales: number;
+  factorRiesgoRuta: number;
+  
+  // Costos Aduaneros
+  tasasFijasAduaneras: number;
+  
+  // Costos Operativos
+  intermediacionAduanera: number;
+  almacenamientoPorDia: number;
+  distribucionLocal: number;
+  tasaInteresFinanciera: number;
+}
+
+export interface ComponentWeights {
+  CD: number;
+  CTI: number;
+  CAT: number;
+  CSG: number;
+  COF: number;
+  CF: number;
+}
+
+export interface RiskFactors {
+  cambiario: number;
+  operacional: number;
+  regulatorio: number;
+  logistico: number;
+  financiero: number;
+}
+
 export interface CostData {
   basicInputs: BasicInputs;
   costosAdicionales: CostosAdicionales;
   modeloOptimizacion: ModeloOptimizacion;
   parametrosEstocasticos: ParametrosEstocasticos;
+  advancedFactors: AdvancedFactors;
 }
 
 export interface ResultadosCalculo {
@@ -101,4 +141,15 @@ export interface ResultadosCalculo {
   
   // Índices de validación
   indicePrecision: number;
+}
+
+// Legacy interface for backward compatibility
+export interface CostCalculations {
+  CD: number;
+  CTI: number;
+  CAT: number;
+  CSG: number;
+  COF: number;
+  CF: number;
+  CAI: number;
 }
