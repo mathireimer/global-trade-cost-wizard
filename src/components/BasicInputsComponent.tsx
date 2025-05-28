@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Package, DollarSign, MapPin, Weight, Percent } from 'lucide-react';
+import { Package, DollarSign, Ship, Shield, TrendingUp, Percent } from 'lucide-react';
 import { BasicInputs } from '@/types/costTypes';
 
 interface BasicInputsComponentProps {
@@ -16,10 +16,10 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
       <CardHeader className="bg-blue-50">
         <CardTitle className="flex items-center gap-3 text-blue-800">
           <Package className="h-6 w-6" />
-          Datos Básicos de la Importación
+          Modelo Fundamental CIF = FOB + CF + S
         </CardTitle>
         <p className="text-sm text-blue-600">
-          Información fundamental para el cálculo del modelo matemático avanzado
+          Datos básicos para el cálculo del Costo Total de Importación basado en Incoterms
         </p>
       </CardHeader>
       <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-6">
@@ -38,42 +38,63 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             placeholder="50,000.00"
             className="text-right"
           />
-          <p className="text-xs text-gray-500">PFOB en la ecuación CD</p>
+          <p className="text-xs text-gray-500">Free on Board - valor en origen</p>
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="distancia" className="flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            Distancia (km)
+          <Label htmlFor="porcentajeFlete" className="flex items-center gap-2">
+            <Ship className="h-4 w-4" />
+            Flete (% FOB)
           </Label>
           <Input
-            id="distancia"
-            type="number"
-            min="0"
-            value={basicInputs.distancia || ''}
-            onChange={(e) => updateBasicInputs('distancia', parseFloat(e.target.value) || 0)}
-            placeholder="8,000"
-            className="text-right"
-          />
-          <p className="text-xs text-gray-500">D para calcular λd</p>
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="peso" className="flex items-center gap-2">
-            <Weight className="h-4 w-4" />
-            Peso (toneladas)
-          </Label>
-          <Input
-            id="peso"
+            id="porcentajeFlete"
             type="number"
             step="0.1"
             min="0"
-            value={basicInputs.peso || ''}
-            onChange={(e) => updateBasicInputs('peso', parseFloat(e.target.value) || 0)}
-            placeholder="15.0"
+            max="50"
+            value={basicInputs.porcentajeFlete || ''}
+            onChange={(e) => updateBasicInputs('porcentajeFlete', parseFloat(e.target.value) || 0)}
+            placeholder="8.0"
             className="text-right"
           />
-          <p className="text-xs text-gray-500">Peso total de la carga</p>
+          <p className="text-xs text-gray-500">CF = FOB × %flete</p>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="porcentajeSeguro" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            Seguro (% CIF)
+          </Label>
+          <Input
+            id="porcentajeSeguro"
+            type="number"
+            step="0.01"
+            min="0"
+            max="2"
+            value={basicInputs.porcentajeSeguro || ''}
+            onChange={(e) => updateBasicInputs('porcentajeSeguro', parseFloat(e.target.value) || 0)}
+            placeholder="0.5"
+            className="text-right"
+          />
+          <p className="text-xs text-gray-500">S = CIF × %seguro</p>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="tipoCambioCompra" className="flex items-center gap-2">
+            <TrendingUp className="h-4 w-4" />
+            Tipo de Cambio
+          </Label>
+          <Input
+            id="tipoCambioCompra"
+            type="number"
+            step="0.01"
+            min="0"
+            value={basicInputs.tipoCambioCompra || ''}
+            onChange={(e) => updateBasicInputs('tipoCambioCompra', parseFloat(e.target.value) || 0)}
+            placeholder="4,000.00"
+            className="text-right"
+          />
+          <p className="text-xs text-gray-500">BG = CIF × TC</p>
         </div>
         
         <div className="space-y-2">
@@ -92,7 +113,7 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             placeholder="12.00"
             className="text-right"
           />
-          <p className="text-xs text-gray-500">τa en la ecuación CAT</p>
+          <p className="text-xs text-gray-500">AD = BG × ta</p>
         </div>
         
         <div className="space-y-2">
@@ -108,7 +129,37 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             placeholder="19.00"
             className="text-right"
           />
-          <p className="text-xs text-gray-500">τv en la ecuación CAT</p>
+          <p className="text-xs text-gray-500">IG = (BG + AD) × ti</p>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="otrosImpuestos">Otros Impuestos (%)</Label>
+          <Input
+            id="otrosImpuestos"
+            type="number"
+            step="0.01"
+            min="0"
+            max="50"
+            value={basicInputs.otrosImpuestos || ''}
+            onChange={(e) => updateBasicInputs('otrosImpuestos', parseFloat(e.target.value) || 0)}
+            placeholder="2.00"
+            className="text-right"
+          />
+          <p className="text-xs text-gray-500">Impuestos específicos</p>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="cantidadDemanda">Cantidad Demanda</Label>
+          <Input
+            id="cantidadDemanda"
+            type="number"
+            min="1"
+            value={basicInputs.cantidadDemanda || ''}
+            onChange={(e) => updateBasicInputs('cantidadDemanda', parseFloat(e.target.value) || 0)}
+            placeholder="100"
+            className="text-right"
+          />
+          <p className="text-xs text-gray-500">Para modelo de optimización</p>
         </div>
       </CardContent>
     </Card>

@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Calculator, TrendingUp, DollarSign, Target, Zap } from 'lucide-react';
+import { Calculator, TrendingUp, DollarSign, Target, Zap, Ship } from 'lucide-react';
 import { CostData } from '@/types/costTypes';
 import { calculateAdvancedCosts, formatCurrency } from '@/utils/advancedCostCalculations';
 
@@ -14,16 +14,16 @@ const AdvancedResultsComponent = ({ costData }: AdvancedResultsComponentProps) =
   const calculations = calculateAdvancedCosts(costData);
   
   const components = [
-    { name: 'CD', label: 'Costos Directos', value: calculations.CD, color: 'bg-blue-500' },
-    { name: 'CTI', label: 'Transporte Internacional', value: calculations.CTI, color: 'bg-green-500' },
-    { name: 'CAT', label: 'Aduaneros y Tributarios', value: calculations.CAT, color: 'bg-purple-500' },
-    { name: 'CSG', label: 'Seguros y Garantías', value: calculations.CSG, color: 'bg-orange-500' },
-    { name: 'COF', label: 'Operativos y Financieros', value: calculations.COF, color: 'bg-indigo-500' },
-    { name: 'CF', label: 'Contingencia y Riesgo', value: calculations.CF, color: 'bg-red-500' },
+    { name: 'FOB', label: 'Free on Board', value: calculations.FOB, color: 'bg-blue-500' },
+    { name: 'CF', label: 'Costo del Flete', value: calculations.costoFlete, color: 'bg-green-500' },
+    { name: 'S', label: 'Prima del Seguro', value: calculations.costoSeguro, color: 'bg-orange-500' },
+    { name: 'AD', label: 'Aranceles y Derechos', value: calculations.aranceles, color: 'bg-purple-500' },
+    { name: 'IG', label: 'Impuestos Generales', value: calculations.impuestosGenerales, color: 'bg-red-500' },
+    { name: 'GA', label: 'Gastos Aduaneros', value: calculations.gastosAduaneros, color: 'bg-indigo-500' },
   ];
 
   const getPercentage = (value: number): number => {
-    return calculations.CAI > 0 ? (value / calculations.CAI) * 100 : 0;
+    return calculations.costoTotalImportacion > 0 ? (value / calculations.costoTotalImportacion) * 100 : 0;
   };
 
   return (
@@ -31,25 +31,25 @@ const AdvancedResultsComponent = ({ costData }: AdvancedResultsComponentProps) =
       <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
         <CardTitle className="flex items-center gap-3">
           <Calculator className="h-6 w-6" />
-          Resultados del Modelo Avanzado
+          Resultados del Modelo CIF
         </CardTitle>
         <p className="text-blue-100 text-sm">
-          CAI = Σ(i=1 to n) [Ci × (1 + Ri) × Wi] × Fo × Fe
+          CTI = CIF × (1 + ta) × (1 + ti) + GA + CO
         </p>
       </CardHeader>
       
       <CardContent className="space-y-6 pt-6">
-        {/* Total CAI */}
+        {/* Total CTI */}
         <div className="text-center p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border">
           <div className="flex items-center justify-center mb-2">
             <DollarSign className="h-8 w-8 text-blue-600 mr-2" />
-            <span className="text-2xl font-bold text-gray-900">CAI Total</span>
+            <span className="text-2xl font-bold text-gray-900">CTI Total</span>
           </div>
           <div className="text-4xl font-bold text-blue-600 mb-2">
-            {formatCurrency(calculations.CAI)}
+            {formatCurrency(calculations.costoTotalImportacion)}
           </div>
           <Badge variant="secondary" className="text-xs">
-            Costo Total de Adquisición Optimizado
+            Costo Total de Importación
           </Badge>
         </div>
 
@@ -57,12 +57,12 @@ const AdvancedResultsComponent = ({ costData }: AdvancedResultsComponentProps) =
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center p-3 bg-green-50 rounded-lg border">
             <div className="flex items-center justify-center mb-1">
-              <Zap className="h-4 w-4 text-green-600 mr-1" />
+              <Ship className="h-4 w-4 text-green-600 mr-1" />
             </div>
             <div className="text-lg font-bold text-green-600">
-              {calculations.optimizationSavings.toFixed(1)}%
+              {formatCurrency(calculations.CIF)}
             </div>
-            <div className="text-xs text-green-700">Ahorro por Optimización</div>
+            <div className="text-xs text-green-700">Valor CIF</div>
           </div>
           
           <div className="text-center p-3 bg-orange-50 rounded-lg border">
@@ -70,9 +70,9 @@ const AdvancedResultsComponent = ({ costData }: AdvancedResultsComponentProps) =
               <Target className="h-4 w-4 text-orange-600 mr-1" />
             </div>
             <div className="text-lg font-bold text-orange-600">
-              {formatCurrency(calculations.VCIF)}
+              {formatCurrency(calculations.baseGravable)}
             </div>
-            <div className="text-xs text-orange-700">Valor CIF</div>
+            <div className="text-xs text-orange-700">Base Gravable</div>
           </div>
         </div>
 
@@ -112,14 +112,33 @@ const AdvancedResultsComponent = ({ costData }: AdvancedResultsComponentProps) =
           ))}
         </div>
 
-        {/* CAI Ajustado por Riesgo */}
-        <div className="p-4 bg-red-50 rounded-lg border">
-          <h4 className="font-semibold text-red-900 mb-2">CAI Ajustado por Riesgo:</h4>
-          <div className="text-xl font-bold text-red-600">
-            {formatCurrency(calculations.riskAdjustedCAI)}
+        {/* Análisis Estocástico */}
+        <div className="p-4 bg-yellow-50 rounded-lg border">
+          <h4 className="font-semibold text-yellow-900 mb-2">Análisis Estocástico:</h4>
+          <div className="space-y-1 text-sm">
+            <div className="flex justify-between">
+              <span>CTI Esperado:</span>
+              <span className="font-bold">{formatCurrency(calculations.CTI_esperado)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Desviación Estándar:</span>
+              <span className="font-bold">{formatCurrency(calculations.desviacionEstandar_CTI)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Coef. Variación:</span>
+              <span className="font-bold">{calculations.coeficienteVariacion.toFixed(2)}%</span>
+            </div>
           </div>
-          <p className="text-xs text-red-700 mt-1">
-            Incluye promedio de factores de riesgo
+        </div>
+
+        {/* CTI con Factor Tiempo */}
+        <div className="p-4 bg-purple-50 rounded-lg border">
+          <h4 className="font-semibold text-purple-900 mb-2">CTI con Factor Tiempo:</h4>
+          <div className="text-xl font-bold text-purple-600">
+            {formatCurrency(calculations.CTI_conTiempo)}
+          </div>
+          <p className="text-xs text-purple-700 mt-1">
+            Incluye tasa de descuento y factor temporal
           </p>
         </div>
 
@@ -127,12 +146,12 @@ const AdvancedResultsComponent = ({ costData }: AdvancedResultsComponentProps) =
         <div className="mt-6 p-4 bg-gray-50 rounded-lg border">
           <h4 className="font-semibold text-gray-900 mb-2">Modelo Matemático:</h4>
           <div className="space-y-1 text-xs font-mono text-gray-700">
-            <p>CD = PFOB × (1 + τe) × (1 + δ) × γq</p>
-            <p>CTI = [FB × (1 + βc) × λd × ψm] × (1 + μs)</p>
-            <p>CAT = VCIF × [τa × (1 + ηp)] + [(VCIF + Aranceles) × τv] + ΣTf</p>
-            <p>CSG = VCIF × σ × (1 + α × κ) × Θ + Σsg</p>
-            <p>COF = [Cia + Ca × t + Cd] × (1 + if × tp) × νe</p>
-            <p>CF = (Σ C1-C5) × φ × ρ × ωv</p>
+            <p>CIF = FOB + CF + S</p>
+            <p>BG = CIF × TC</p>
+            <p>AD = BG × ta</p>
+            <p>IG = (BG + AD) × ti</p>
+            <p>CTI = BG + GT + GA + CO</p>
+            <p>CTI(t) = CTI × (1 + r)^t</p>
           </div>
         </div>
       </CardContent>

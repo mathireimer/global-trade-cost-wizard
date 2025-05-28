@@ -1,111 +1,98 @@
 
-import { CostData, AdvancedCalculations } from '@/types/costTypes';
+import { CostData, ResultadosCalculo } from '@/types/costTypes';
 
-// Constantes del modelo
-const DISTANCE_REFERENCE = 5000; // Dref en km
-const DISTANCE_EXPONENT = 0.3;
-
-export const calculateAdvancedCosts = (data: CostData): AdvancedCalculations => {
-  const { basicInputs, advancedFactors, componentWeights, riskFactors } = data;
+export const calculateAdvancedCosts = (data: CostData): ResultadosCalculo => {
+  const { basicInputs, costosAdicionales, modeloOptimizacion, parametrosEstocasticos } = data;
   
-  // C1 - Costos Directos de Mercancía
-  // CD = PFOB × (1 + τe) × (1 + δ) × γq
-  const CD = basicInputs.precioFOB * 
-    (1 + advancedFactors.tasaEmbalajeEspecial / 100) * 
-    (1 + advancedFactors.factorCertificaciones / 100) * 
-    advancedFactors.factorCalidad;
-
-  // C2 - Costos de Transporte Internacional
-  // λd = 1 + (D/Dref)^0.3
-  const lambdaD = 1 + Math.pow(basicInputs.distancia / DISTANCE_REFERENCE, DISTANCE_EXPONENT);
+  // 1. Cálculo del modelo fundamental CIF = FOB + CF + S
+  const FOB = basicInputs.precioFOB;
   
-  // CTI = [FB × (1 + βc) × λd × ψm] × (1 + μs)
-  const CTI = advancedFactors.fleteBase * 
-    (1 + advancedFactors.recargosCombustible / 100) * 
-    lambdaD * 
-    advancedFactors.factorModalidad * 
-    (1 + advancedFactors.factorEstacional / 100);
-
-  // Cálculo del seguro básico para VCIF
-  const seguroBasico = (basicInputs.precioFOB + CTI) * 
-    (advancedFactors.tasaSeguroBase / 100) * 
-    advancedFactors.factorRiesgoRuta * 
-    advancedFactors.coeficientePeligrosidad * 
-    advancedFactors.factorClimatico;
-
-  // VCIF = PFOB + CTI + Seguros
-  const VCIF = basicInputs.precioFOB + CTI + seguroBasico;
-
-  // C3 - Costos Aduaneros y Tributarios
-  // CAT = VCIF × [τa × (1 + ηp)] + [(VCIF + Aranceles) × τv] + ΣTf
-  const aranceles = VCIF * (basicInputs.tasaArancelaria / 100) * 
-    (1 + advancedFactors.factorPenalizacion / 100);
-  const iva = (VCIF + aranceles) * (basicInputs.tasaIVA / 100);
-  const CAT = aranceles + iva + advancedFactors.tasasFijasAduaneras;
-
-  // C4 - Costos de Seguros y Garantías
-  // CSG = VCIF × σ × (1 + α × κ) × Θ + Σsg
-  const CSG = VCIF * 
-    (advancedFactors.tasaSeguroBase / 100) * 
-    (1 + advancedFactors.factorRiesgoRuta * advancedFactors.coeficientePeligrosidad) * 
-    advancedFactors.factorClimatico + 
-    advancedFactors.segurosAdicionales;
-
-  // C5 - Costos Operativos y Financieros
-  // COF = [Cia + Ca × t + Cd] × (1 + if × tp) × νe
-  const costosOperativosBase = advancedFactors.intermediacionAduanera + 
-    (advancedFactors.almacenamientoPorDia * advancedFactors.tiempoFinanciamiento) + 
-    advancedFactors.distribucionLocal;
+  // CF = FOB × %flete
+  const costoFlete = FOB * (basicInputs.porcentajeFlete / 100);
   
-  const COF = costosOperativosBase * 
-    (1 + (advancedFactors.tasaInteresFinanciera / 100) * (advancedFactors.tiempoFinanciamiento / 365)) * 
-    advancedFactors.factorEficiencia;
-
-  // C6 - Costos de Contingencia
-  // CF = (Σ C1-C5) × φ × ρ × ωv
-  const sumaCostos = CD + CTI + CAT + CSG + COF;
-  const CF = sumaCostos * 
-    (advancedFactors.factorContingencia / 100) * 
-    advancedFactors.factorVolatilidad * 
-    advancedFactors.coeficienteVariabilidad;
-
-  // Aplicación de pesos y factores de riesgo
-  const costosConPesos = [
-    CD * (1 + riskFactors.r1 / 100) * componentWeights.w1,
-    CTI * (1 + riskFactors.r2 / 100) * componentWeights.w2,
-    CAT * (1 + riskFactors.r3 / 100) * componentWeights.w3,
-    CSG * (1 + riskFactors.r4 / 100) * componentWeights.w4,
-    COF * (1 + riskFactors.r5 / 100) * componentWeights.w5,
-    CF * (1 + riskFactors.r6 / 100) * componentWeights.w6
-  ];
-
-  // CAI con factores de optimización
-  // CAI = Σ(i=1 to n) [Ci × (1 + Ri) × Wi] × Fo × Fe
-  const sumaCostosConPesos = costosConPesos.reduce((sum, cost) => sum + cost, 0);
-  const CAI = sumaCostosConPesos * 
-    advancedFactors.factorOptimizacion * 
-    advancedFactors.factorEconomiasEscala;
-
-  // CAI sin optimización para calcular ahorros
-  const CAISinOptimizacion = sumaCostosConPesos;
-  const optimizationSavings = ((CAISinOptimizacion - CAI) / CAISinOptimizacion) * 100;
-
-  // CAI ajustado por riesgo (para análisis)
-  const factorRiesgoPromedio = (riskFactors.r1 + riskFactors.r2 + riskFactors.r3 + 
-    riskFactors.r4 + riskFactors.r5 + riskFactors.r6) / 6;
-  const riskAdjustedCAI = CAI * (1 + factorRiesgoPromedio / 100);
-
+  // Para calcular el seguro necesitamos el CIF, así que usamos iteración
+  // CIF = FOB + CF + S, donde S = CIF × %seguro
+  // CIF = FOB + CF + (CIF × %seguro)
+  // CIF × (1 - %seguro) = FOB + CF
+  // CIF = (FOB + CF) / (1 - %seguro)
+  const CIF = (FOB + costoFlete) / (1 - basicInputs.porcentajeSeguro / 100);
+  const costoSeguro = CIF - FOB - costoFlete;
+  
+  // 2. Base gravable: BG = CIF × TC_compra
+  const baseGravable = CIF * basicInputs.tipoCambioCompra;
+  
+  // 3. Cálculo de aranceles: AD = CIF × ta
+  const aranceles = baseGravable * (basicInputs.tasaArancelaria / 100);
+  
+  // 4. Cálculo de impuestos generales: IG = (CIF + AD) × ti
+  const impuestosGenerales = (baseGravable + aranceles) * (basicInputs.tasaIVA / 100);
+  
+  // 5. Otros impuestos
+  const otrosImpuestosTotal = (baseGravable + aranceles) * (basicInputs.otrosImpuestos / 100);
+  
+  // 6. Total de gravámenes: GT = AD + IG + otros
+  const gravamenesTotal = aranceles + impuestosGenerales + otrosImpuestosTotal;
+  
+  // 7. Gastos Aduaneros (GA)
+  const gastosAduaneros = costosAdicionales.agenciamientoAduanero + 
+                         costosAdicionales.almacenajePortuario + 
+                         costosAdicionales.manipulacionCarga + 
+                         costosAdicionales.documentacionAduanera;
+  
+  // 8. Costos Operacionales (CO)
+  const costosOperacionales = costosAdicionales.transporteInterno + 
+                             costosAdicionales.segurosLocales + 
+                             costosAdicionales.gastosFinancieros + 
+                             costosAdicionales.otrosGastos;
+  
+  // 9. Costo Total de Importación: CTI = BG + GT + GA + CO
+  const costoTotalImportacion = baseGravable + gravamenesTotal + gastosAduaneros + costosOperacionales;
+  
+  // 10. Modelo con factor tiempo: CTI(t) = CTI × (1 + r)^t
+  const CTI_conTiempo = costoTotalImportacion * Math.pow(1 + modeloOptimizacion.tasaDescuento / 100, modeloOptimizacion.tiempoOperacion);
+  
+  // 11. Modelo estocástico
+  // E[CTI] = μ_CIF × (1 + μ_ta) × (1 + μ_ti) × μ_TC + μ_GA + μ_CO
+  const CTI_esperado = parametrosEstocasticos.mu_CIF * 
+                      (1 + parametrosEstocasticos.mu_ta / 100) * 
+                      (1 + parametrosEstocasticos.mu_ti / 100) * 
+                      parametrosEstocasticos.mu_TC + 
+                      parametrosEstocasticos.mu_GA + 
+                      parametrosEstocasticos.mu_CO;
+  
+  // Var[CTI] = σ²_CIF + σ²_TC + σ²_GA + 2×Cov(CIF,TC)
+  const varianza_CTI = parametrosEstocasticos.sigma2_CIF + 
+                      parametrosEstocasticos.sigma2_TC + 
+                      parametrosEstocasticos.sigma2_GA + 
+                      2 * parametrosEstocasticos.cov_CIF_TC;
+  
+  const desviacionEstandar_CTI = Math.sqrt(varianza_CTI);
+  
+  // Coeficiente de Variación = σ_CTI / μ_CTI
+  const coeficienteVariacion = CTI_esperado > 0 ? (desviacionEstandar_CTI / CTI_esperado) * 100 : 0;
+  
+  // Índice de precisión (simulado - en implementación real se compararía con datos históricos)
+  const indicePrecision = Math.max(0, 100 - Math.abs(coeficienteVariacion));
+  
   return {
-    CD,
-    CTI,
-    CAT,
-    CSG,
-    COF,
-    CF,
-    VCIF,
-    CAI,
-    optimizationSavings,
-    riskAdjustedCAI
+    FOB,
+    costoFlete,
+    costoSeguro,
+    CIF,
+    baseGravable,
+    aranceles,
+    impuestosGenerales,
+    otrosImpuestosTotal,
+    gravamenesTotal,
+    gastosAduaneros,
+    costosOperacionales,
+    costoTotalImportacion,
+    CTI_esperado,
+    varianza_CTI,
+    desviacionEstandar_CTI,
+    coeficienteVariacion,
+    CTI_conTiempo,
+    indicePrecision
   };
 };
 
@@ -122,48 +109,33 @@ export const formatPercentage = (value: number): string => {
   return `${value.toFixed(2)}%`;
 };
 
-// Función para calcular elasticidades
-export const calculateElasticities = (data: CostData): number[][] => {
-  const baseCalculation = calculateAdvancedCosts(data);
-  const elasticityMatrix: number[][] = [];
+// Función para calcular economías de escala
+export const calcularEconomiasEscala = (cantidad: number, parametros: { alfa: number, beta: number, gamma: number }): number => {
+  // CF_j = α_j + β_j × Q_j^γ_j
+  return parametros.alfa + parametros.beta * Math.pow(cantidad, parametros.gamma);
+};
+
+// Función para optimización de costos (modelo simplificado)
+export const optimizarCostos = (data: CostData, opciones: number[]): { cantidadOptima: number, costoMinimo: number } => {
+  let costoMinimo = Infinity;
+  let cantidadOptima = 0;
   
-  // Perturbación del 1% para calcular elasticidades
-  const perturbation = 0.01;
-  
-  const variables = [
-    'precioFOB', 'tasaArancelaria', 'tasaIVA', 'fleteBase', 'factorOptimizacion'
-  ];
-  
-  variables.forEach((variable, i) => {
-    elasticityMatrix[i] = [];
-    
-    // Crear datos perturbados
-    const perturbedData = JSON.parse(JSON.stringify(data));
-    
-    if (variable === 'precioFOB') {
-      perturbedData.basicInputs.precioFOB *= (1 + perturbation);
-    } else if (variable === 'tasaArancelaria') {
-      perturbedData.basicInputs.tasaArancelaria *= (1 + perturbation);
-    } else if (variable === 'tasaIVA') {
-      perturbedData.basicInputs.tasaIVA *= (1 + perturbation);
-    } else if (variable === 'fleteBase') {
-      perturbedData.advancedFactors.fleteBase *= (1 + perturbation);
-    } else if (variable === 'factorOptimizacion') {
-      perturbedData.advancedFactors.factorOptimizacion *= (1 + perturbation);
-    }
-    
-    const perturbedCalculation = calculateAdvancedCosts(perturbedData);
-    
-    // Calcular elasticidades para cada componente
-    const components = ['CD', 'CTI', 'CAT', 'CSG', 'COF'];
-    components.forEach((component, j) => {
-      const baseValue = baseCalculation[component as keyof AdvancedCalculations] as number;
-      const perturbedValue = perturbedCalculation[component as keyof AdvancedCalculations] as number;
+  opciones.forEach(cantidad => {
+    if (cantidad >= data.basicInputs.cantidadDemanda) {
+      const costoEscala = calcularEconomiasEscala(cantidad, {
+        alfa: data.modeloOptimizacion.costoFijoFlete,
+        beta: data.modeloOptimizacion.costoVariableUnidad,
+        gamma: data.modeloOptimizacion.parametroEconomias
+      });
       
-      const elasticity = ((perturbedValue - baseValue) / baseValue) / perturbation;
-      elasticityMatrix[i][j] = elasticity;
-    });
+      const costoTotal = costoEscala * cantidad;
+      
+      if (costoTotal < costoMinimo) {
+        costoMinimo = costoTotal;
+        cantidadOptima = cantidad;
+      }
+    }
   });
   
-  return elasticityMatrix;
+  return { cantidadOptima, costoMinimo };
 };
