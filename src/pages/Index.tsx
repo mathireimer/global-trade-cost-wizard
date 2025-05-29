@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -49,18 +48,42 @@ const Index = () => {
       cov_CIF_TC: 15000
     },
     advancedFactors: {
+      // Costos de Transporte
       fleteBase: 2000,
       recargosCombustible: 15,
       factorModalidad: 1.0,
       factorEstacional: 0,
+      
+      // Costos de Seguros
       tasaSeguroBase: 0.5,
       segurosAdicionales: 0,
       factorRiesgoRuta: 1.0,
+      coeficientePeligrosidad: 1.0,
+      factorClimatico: 1.0,
+      
+      // Costos Aduaneros
       tasasFijasAduaneras: 0,
+      factorPenalizacion: 0,
+      
+      // Costos Operativos
       intermediacionAduanera: 500,
       almacenamientoPorDia: 25,
       distribucionLocal: 800,
-      tasaInteresFinanciera: 12
+      tasaInteresFinanciera: 12,
+      tiempoFinanciamiento: 30,
+      factorEficiencia: 1.0,
+      
+      // Factores Directos
+      tasaEmbalajeEspecial: 0,
+      factorCertificaciones: 0,
+      factorCalidad: 1.0,
+      
+      // Factores de Optimización
+      factorContingencia: 5,
+      factorVolatilidad: 1.0,
+      coeficienteVariabilidad: 1.0,
+      factorOptimizacion: 1.0,
+      factorEconomiasEscala: 1.0
     }
   });
 
@@ -156,18 +179,42 @@ const Index = () => {
         cov_CIF_TC: 15000
       },
       advancedFactors: {
+        // Costos de Transporte
         fleteBase: 2000,
         recargosCombustible: 15,
         factorModalidad: 1.0,
         factorEstacional: 0,
+        
+        // Costos de Seguros
         tasaSeguroBase: 0.5,
         segurosAdicionales: 0,
         factorRiesgoRuta: 1.0,
+        coeficientePeligrosidad: 1.0,
+        factorClimatico: 1.0,
+        
+        // Costos Aduaneros
         tasasFijasAduaneras: 0,
+        factorPenalizacion: 0,
+        
+        // Costos Operativos
         intermediacionAduanera: 500,
         almacenamientoPorDia: 25,
         distribucionLocal: 800,
-        tasaInteresFinanciera: 12
+        tasaInteresFinanciera: 12,
+        tiempoFinanciamiento: 30,
+        factorEficiencia: 1.0,
+        
+        // Factores Directos
+        tasaEmbalajeEspecial: 0,
+        factorCertificaciones: 0,
+        factorCalidad: 1.0,
+        
+        // Factores de Optimización
+        factorContingencia: 5,
+        factorVolatilidad: 1.0,
+        coeficienteVariabilidad: 1.0,
+        factorOptimizacion: 1.0,
+        factorEconomiasEscala: 1.0
       }
     });
   };

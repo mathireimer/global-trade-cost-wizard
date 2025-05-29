@@ -63,42 +63,77 @@ export interface ParametrosEstocasticos {
 }
 
 export interface AdvancedFactors {
-  // Costos de Transporte
-  fleteBase: number;
-  recargosCombustible: number;
-  factorModalidad: number;
-  factorEstacional: number;
+  // Costos de Transporte - CTI
+  fleteBase: number; // FB
+  recargosCombustible: number; // βc
+  factorModalidad: number; // ψm
+  factorEstacional: number; // μs
   
-  // Costos de Seguros
-  tasaSeguroBase: number;
-  segurosAdicionales: number;
-  factorRiesgoRuta: number;
+  // Costos de Seguros - CSG
+  tasaSeguroBase: number; // σ
+  segurosAdicionales: number; // Σsg
+  factorRiesgoRuta: number; // α
+  coeficientePeligrosidad: number; // κ
+  factorClimatico: number; // Θ
   
-  // Costos Aduaneros
-  tasasFijasAduaneras: number;
+  // Costos Aduaneros - CAT
+  tasasFijasAduaneras: number; // ΣTf
+  factorPenalizacion: number; // ηp
   
-  // Costos Operativos
-  intermediacionAduanera: number;
-  almacenamientoPorDia: number;
-  distribucionLocal: number;
-  tasaInteresFinanciera: number;
+  // Costos Operativos - COF
+  intermediacionAduanera: number; // Cia
+  almacenamientoPorDia: number; // Ca
+  distribucionLocal: number; // Cd
+  tasaInteresFinanciera: number; // if
+  tiempoFinanciamiento: number; // tp
+  factorEficiencia: number; // νe
+  
+  // Factores Directos - CD
+  tasaEmbalajeEspecial: number; // τe
+  factorCertificaciones: number; // δ
+  factorCalidad: number; // γq
+  
+  // Factores de Optimización
+  factorContingencia: number; // φ
+  factorVolatilidad: number; // ρ
+  coeficienteVariabilidad: number; // ωv
+  factorOptimizacion: number; // Fo
+  factorEconomiasEscala: number; // Fe
 }
 
 export interface ComponentWeights {
-  CD: number;
-  CTI: number;
-  CAT: number;
-  CSG: number;
-  COF: number;
-  CF: number;
+  // Pesos para cada componente (w1, w2, etc.)
+  CD: number; // w1
+  CTI: number; // w2
+  CAT: number; // w3
+  CSG: number; // w4
+  COF: number; // w5
+  CF: number; // w6
+  
+  // Legacy properties for backward compatibility
+  w1: number;
+  w2: number;
+  w3: number;
+  w4: number;
+  w5: number;
+  w6: number;
 }
 
 export interface RiskFactors {
-  cambiario: number;
-  operacional: number;
-  regulatorio: number;
-  logistico: number;
-  financiero: number;
+  // Factores de riesgo (r1, r2, etc.)
+  cambiario: number; // r1
+  operacional: number; // r2
+  regulatorio: number; // r3
+  logistico: number; // r4
+  financiero: number; // r5
+  
+  // Legacy properties for backward compatibility
+  r1: number;
+  r2: number;
+  r3: number;
+  r4: number;
+  r5: number;
+  r6: number;
 }
 
 export interface CostData {
@@ -128,7 +163,7 @@ export interface ResultadosCalculo {
   costosOperacionales: number; // CO
   
   // Resultado final
-  costoTotalImportacion: number; // CTI
+  costoTotalImportacion: number; // CTI/CAI
   
   // Modelo estocástico
   CTI_esperado: number;
