@@ -1,7 +1,7 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Calculator, FileText, TrendingUp, Brain } from 'lucide-react';
 import BasicInputsComponent from '@/components/BasicInputsComponent';
 import AdvancedResultsComponent from '@/components/AdvancedResultsComponent';
@@ -241,16 +241,38 @@ const Index = () => {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Form */}
+          {/* Main Form with Collapsible Sections */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Inputs Básicos */}
-            <BasicInputsComponent 
-              basicInputs={costData.basicInputs} 
-              updateBasicInputs={updateBasicInputs} 
-            />
+            <Accordion type="multiple" defaultValue={["inputs", "analysis"]} className="space-y-4">
+              {/* Inputs Básicos */}
+              <AccordionItem value="inputs" className="border rounded-lg">
+                <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                  <div className="flex items-center gap-3 text-lg font-semibold text-blue-800">
+                    <Calculator className="h-5 w-5" />
+                    Inputs Básicos del Modelo
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-0 pb-0">
+                  <BasicInputsComponent 
+                    basicInputs={costData.basicInputs} 
+                    updateBasicInputs={updateBasicInputs} 
+                  />
+                </AccordionContent>
+              </AccordionItem>
 
-            {/* Nuevo: Análisis de Interrelaciones */}
-            <InterrelationAnalysis costData={costData} />
+              {/* Análisis de Interrelaciones */}
+              <AccordionItem value="analysis" className="border rounded-lg">
+                <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                  <div className="flex items-center gap-3 text-lg font-semibold text-purple-800">
+                    <TrendingUp className="h-5 w-5" />
+                    Análisis de Interrelaciones
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-0 pb-0">
+                  <InterrelationAnalysis costData={costData} />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
 
             {/* Action Buttons */}
             <div className="flex gap-4 justify-center">
