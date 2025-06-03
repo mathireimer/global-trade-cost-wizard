@@ -1,9 +1,11 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calculator, FileText, TrendingUp, Brain } from 'lucide-react';
 import BasicInputsComponent from '@/components/BasicInputsComponent';
 import AdvancedResultsComponent from '@/components/AdvancedResultsComponent';
+import InterrelationAnalysis from '@/components/InterrelationAnalysis';
 import { CostData } from '@/types/costTypes';
 
 const Index = () => {
@@ -246,6 +248,9 @@ const Index = () => {
               basicInputs={costData.basicInputs} 
               updateBasicInputs={updateBasicInputs} 
             />
+
+            {/* Nuevo: Análisis de Interrelaciones */}
+            <InterrelationAnalysis costData={costData} />
 
             {/* Action Buttons */}
             <div className="flex gap-4 justify-center">
