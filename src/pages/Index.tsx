@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,7 +15,7 @@ const Index = () => {
       precioFOB: 50000,
       porcentajeFlete: 8,
       porcentajeSeguro: 0.5,
-      tipoCambioCompra: 4000,
+      tipoCambioCompra: 8000,
       tasaArancelaria: 12,
       tasaIVA: 19,
       otrosImpuestos: 2,
@@ -41,7 +42,7 @@ const Index = () => {
       mu_CIF: 54000,
       mu_ta: 12,
       mu_ti: 19,
-      mu_TC: 4000,
+      mu_TC: 8000,
       mu_GA: 1800,
       mu_CO: 2500,
       sigma2_CIF: 1000000,
@@ -145,7 +146,7 @@ const Index = () => {
         precioFOB: 50000,
         porcentajeFlete: 8,
         porcentajeSeguro: 0.5,
-        tipoCambioCompra: 4000,
+        tipoCambioCompra: 8000,
         tasaArancelaria: 12,
         tasaIVA: 19,
         otrosImpuestos: 2,
@@ -172,7 +173,7 @@ const Index = () => {
         mu_CIF: 54000,
         mu_ta: 12,
         mu_ti: 19,
-        mu_TC: 4000,
+        mu_TC: 8000,
         mu_GA: 1800,
         mu_CO: 2500,
         sigma2_CIF: 1000000,

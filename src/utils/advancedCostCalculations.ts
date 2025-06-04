@@ -139,12 +139,12 @@ export const calculateElasticities = (data: CostData): number[][] => {
 };
 
 export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('es-ES', {
+  return new Intl.NumberFormat('es-PY', {
     style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
+    currency: 'PYG',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount).replace('PYG', 'Gs.');
 };
 
 export const formatPercentage = (value: number): string => {

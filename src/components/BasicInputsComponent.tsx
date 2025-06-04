@@ -82,7 +82,7 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
         <div className="space-y-2">
           <Label htmlFor="tipoCambioCompra" className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
-            Tipo de Cambio
+            Tipo de Cambio (Gs./USD)
           </Label>
           <Input
             id="tipoCambioCompra"
@@ -91,7 +91,7 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             min="0"
             value={basicInputs.tipoCambioCompra || ''}
             onChange={(e) => updateBasicInputs('tipoCambioCompra', parseFloat(e.target.value) || 0)}
-            placeholder="4,000.00"
+            placeholder="8,000.00"
             className="text-right"
           />
           <p className="text-xs text-gray-500">BG = CIF × TC</p>
