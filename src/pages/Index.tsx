@@ -12,24 +12,24 @@ import { CostData } from '@/types/costTypes';
 const Index = () => {
   const [costData, setCostData] = useState<CostData>({
     basicInputs: {
-      precioFOB: 50000,
-      porcentajeFlete: 8,
-      porcentajeSeguro: 0.5,
+      precioFOB: 10000, // Valor de la tabla
+      porcentajeFlete: 8, // 8% según tabla
+      porcentajeSeguro: 0.5, // 0.5% según tabla
       tipoCambioCompra: 8000,
-      tasaArancelaria: 12,
-      tasaIVA: 19,
-      otrosImpuestos: 2,
-      cantidadDemanda: 100
+      tasaArancelaria: 12, // 12% según tabla
+      tasaIVA: 10, // 10% según tabla (cambiado de 19%)
+      otrosImpuestos: 2, // 2% según tabla
+      cantidadDemanda: 1 // Cambiado a 1 unidad como en la tabla
     },
     costosAdicionales: {
-      agenciamientoAduanero: 800,
-      almacenajePortuario: 500,
-      manipulacionCarga: 300,
-      documentacionAduanera: 200,
-      transporteInterno: 1200,
-      segurosLocales: 400,
-      gastosFinancieros: 600,
-      otrosGastos: 300
+      agenciamientoAduanero: 200, // Gastos Aduaneros según tabla
+      almacenajePortuario: 0,
+      manipulacionCarga: 0,
+      documentacionAduanera: 0,
+      transporteInterno: 100, // Costos Operativos según tabla
+      segurosLocales: 0,
+      gastosFinancieros: 0,
+      otrosGastos: 0
     },
     modeloOptimizacion: {
       costoFijoFlete: 2000,
@@ -39,21 +39,21 @@ const Index = () => {
       tiempoOperacion: 0.25
     },
     parametrosEstocasticos: {
-      mu_CIF: 54000,
+      mu_CIF: 10854, // CIF según tabla
       mu_ta: 12,
-      mu_ti: 19,
+      mu_ti: 10, // Actualizado para coincidir con IVA
       mu_TC: 8000,
-      mu_GA: 1800,
-      mu_CO: 2500,
-      sigma2_CIF: 1000000,
+      mu_GA: 200, // Gastos Aduaneros según tabla
+      mu_CO: 100, // Costos Operativos según tabla
+      sigma2_CIF: 100000, // Reducido proporcionalmente
       sigma2_TC: 10000,
-      sigma2_GA: 40000,
-      cov_CIF_TC: 15000
+      sigma2_GA: 1000, // Reducido proporcionalmente
+      cov_CIF_TC: 1500 // Reducido proporcionalmente
     },
     advancedFactors: {
       // Costos de Transporte
-      fleteBase: 2000,
-      recargosCombustible: 15,
+      fleteBase: 800, // Flete según tabla
+      recargosCombustible: 0,
       factorModalidad: 1.0,
       factorEstacional: 0,
       
@@ -69,9 +69,9 @@ const Index = () => {
       factorPenalizacion: 0,
       
       // Costos Operativos
-      intermediacionAduanera: 500,
-      almacenamientoPorDia: 25,
-      distribucionLocal: 800,
+      intermediacionAduanera: 200, // Gastos Aduaneros según tabla
+      almacenamientoPorDia: 0,
+      distribucionLocal: 100, // Costos Operativos según tabla
       tasaInteresFinanciera: 12,
       tiempoFinanciamiento: 30,
       factorEficiencia: 1.0,
@@ -143,24 +143,24 @@ const Index = () => {
   const resetToDefaults = () => {
     setCostData({
       basicInputs: {
-        precioFOB: 50000,
-        porcentajeFlete: 8,
-        porcentajeSeguro: 0.5,
+        precioFOB: 10000, // Valor de la tabla
+        porcentajeFlete: 8, // 8% según tabla
+        porcentajeSeguro: 0.5, // 0.5% según tabla
         tipoCambioCompra: 8000,
-        tasaArancelaria: 12,
-        tasaIVA: 19,
-        otrosImpuestos: 2,
-        cantidadDemanda: 100
+        tasaArancelaria: 12, // 12% según tabla
+        tasaIVA: 10, // 10% según tabla
+        otrosImpuestos: 2, // 2% según tabla
+        cantidadDemanda: 1 // 1 unidad como en la tabla
       },
       costosAdicionales: {
-        agenciamientoAduanero: 800,
-        almacenajePortuario: 500,
-        manipulacionCarga: 300,
-        documentacionAduanera: 200,
-        transporteInterno: 1200,
-        segurosLocales: 400,
-        gastosFinancieros: 600,
-        otrosGastos: 300
+        agenciamientoAduanero: 200, // Gastos Aduaneros según tabla
+        almacenajePortuario: 0,
+        manipulacionCarga: 0,
+        documentacionAduanera: 0,
+        transporteInterno: 100, // Costos Operativos según tabla
+        segurosLocales: 0,
+        gastosFinancieros: 0,
+        otrosGastos: 0
       },
       modeloOptimizacion: {
         costoFijoFlete: 2000,
@@ -170,21 +170,21 @@ const Index = () => {
         tiempoOperacion: 0.25
       },
       parametrosEstocasticos: {
-        mu_CIF: 54000,
+        mu_CIF: 10854, // CIF según tabla
         mu_ta: 12,
-        mu_ti: 19,
+        mu_ti: 10, // Actualizado para coincidir con IVA
         mu_TC: 8000,
-        mu_GA: 1800,
-        mu_CO: 2500,
-        sigma2_CIF: 1000000,
+        mu_GA: 200, // Gastos Aduaneros según tabla
+        mu_CO: 100, // Costos Operativos según tabla
+        sigma2_CIF: 100000,
         sigma2_TC: 10000,
-        sigma2_GA: 40000,
-        cov_CIF_TC: 15000
+        sigma2_GA: 1000,
+        cov_CIF_TC: 1500
       },
       advancedFactors: {
         // Costos de Transporte
-        fleteBase: 2000,
-        recargosCombustible: 15,
+        fleteBase: 800, // Flete según tabla
+        recargosCombustible: 0,
         factorModalidad: 1.0,
         factorEstacional: 0,
         
@@ -200,9 +200,9 @@ const Index = () => {
         factorPenalizacion: 0,
         
         // Costos Operativos
-        intermediacionAduanera: 500,
-        almacenamientoPorDia: 25,
-        distribucionLocal: 800,
+        intermediacionAduanera: 200, // Gastos Aduaneros según tabla
+        almacenamientoPorDia: 0,
+        distribucionLocal: 100, // Costos Operativos según tabla
         tasaInteresFinanciera: 12,
         tiempoFinanciamiento: 30,
         factorEficiencia: 1.0,

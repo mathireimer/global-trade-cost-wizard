@@ -35,7 +35,7 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             min="0"
             value={basicInputs.precioFOB || ''}
             onChange={(e) => updateBasicInputs('precioFOB', parseFloat(e.target.value) || 0)}
-            placeholder="50,000.00"
+            placeholder="10,000.00"
             className="text-right"
           />
           <p className="text-xs text-gray-500">Free on Board - valor en origen</p>
@@ -126,7 +126,7 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             max="100"
             value={basicInputs.tasaIVA || ''}
             onChange={(e) => updateBasicInputs('tasaIVA', parseFloat(e.target.value) || 0)}
-            placeholder="19.00"
+            placeholder="10.00"
             className="text-right"
           />
           <p className="text-xs text-gray-500">IG = (BG + AD) × ti</p>
@@ -156,7 +156,7 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             min="1"
             value={basicInputs.cantidadDemanda || ''}
             onChange={(e) => updateBasicInputs('cantidadDemanda', parseFloat(e.target.value) || 0)}
-            placeholder="100"
+            placeholder="1"
             className="text-right"
           />
           <p className="text-xs text-gray-500">Para modelo de optimización</p>
