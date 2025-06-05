@@ -7,6 +7,7 @@ import { Calculator, FileText, TrendingUp, Brain } from 'lucide-react';
 import BasicInputsComponent from '@/components/BasicInputsComponent';
 import AdvancedResultsComponent from '@/components/AdvancedResultsComponent';
 import InterrelationAnalysis from '@/components/InterrelationAnalysis';
+import ConceptsExplanationComponent from '@/components/ConceptsExplanationComponent';
 import { CostData } from '@/types/costTypes';
 
 const Index = () => {
@@ -271,6 +272,19 @@ const Index = () => {
                 </AccordionTrigger>
                 <AccordionContent className="px-0 pb-0">
                   <InterrelationAnalysis costData={costData} />
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Glosario de Conceptos */}
+              <AccordionItem value="concepts" className="border rounded-lg">
+                <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                  <div className="flex items-center gap-3 text-lg font-semibold text-green-800">
+                    <FileText className="h-5 w-5" />
+                    Glosario de Conceptos
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-0 pb-0">
+                  <ConceptsExplanationComponent />
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
