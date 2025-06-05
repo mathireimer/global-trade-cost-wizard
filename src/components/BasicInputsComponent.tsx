@@ -11,6 +11,15 @@ interface BasicInputsComponentProps {
 }
 
 const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsComponentProps) => {
+  const formatUSD = (amount: number): string => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  };
+
   return (
     <Card className="border-l-4 border-l-blue-500 shadow-lg hover:shadow-xl transition-shadow duration-300">
       <CardHeader className="bg-blue-50">
@@ -38,7 +47,8 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             placeholder="10,000.00"
             className="text-right"
           />
-          <p className="text-xs text-gray-500">Free on Board - valor en origen</p>
+          <p className="text-xs text-gray-500">Free on Board - valor en origen (USD)</p>
+          <p className="text-xs text-blue-600 font-mono">{formatUSD(basicInputs.precioFOB || 0)}</p>
         </div>
         
         <div className="space-y-2">
@@ -57,7 +67,10 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             placeholder="8.0"
             className="text-right"
           />
-          <p className="text-xs text-gray-500">CF = FOB × %flete</p>
+          <p className="text-xs text-gray-500">CF = FOB × %flete (USD)</p>
+          <p className="text-xs text-blue-600 font-mono">
+            {formatUSD((basicInputs.precioFOB || 0) * (basicInputs.porcentajeFlete || 0) / 100)}
+          </p>
         </div>
         
         <div className="space-y-2">
@@ -76,7 +89,7 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             placeholder="0.5"
             className="text-right"
           />
-          <p className="text-xs text-gray-500">S = CIF × %seguro</p>
+          <p className="text-xs text-gray-500">S = CIF × %seguro (USD)</p>
         </div>
         
         <div className="space-y-2">
@@ -94,7 +107,10 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             placeholder="8,000.00"
             className="text-right"
           />
-          <p className="text-xs text-gray-500">BG = CIF × TC</p>
+          <p className="text-xs text-gray-500">Conversión USD → Gs.</p>
+          <p className="text-xs text-blue-600 font-mono">
+            1 USD = {(basicInputs.tipoCambioCompra || 0).toLocaleString('es-PY')} Gs.
+          </p>
         </div>
         
         <div className="space-y-2">
@@ -113,7 +129,7 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             placeholder="12.00"
             className="text-right"
           />
-          <p className="text-xs text-gray-500">AD = BG × ta</p>
+          <p className="text-xs text-gray-500">AD = BG × ta (aplicado en Gs.)</p>
         </div>
         
         <div className="space-y-2">
@@ -129,7 +145,7 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             placeholder="10.00"
             className="text-right"
           />
-          <p className="text-xs text-gray-500">IG = (BG + AD) × ti</p>
+          <p className="text-xs text-gray-500">IG = (BG + AD) × ti (aplicado en Gs.)</p>
         </div>
         
         <div className="space-y-2">
@@ -145,7 +161,7 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             placeholder="2.00"
             className="text-right"
           />
-          <p className="text-xs text-gray-500">Impuestos específicos</p>
+          <p className="text-xs text-gray-500">Impuestos específicos (aplicado en Gs.)</p>
         </div>
         
         <div className="space-y-2">
@@ -159,7 +175,7 @@ const BasicInputsComponent = ({ basicInputs, updateBasicInputs }: BasicInputsCom
             placeholder="1"
             className="text-right"
           />
-          <p className="text-xs text-gray-500">Para modelo de optimización</p>
+          <p className="text-xs text-gray-500">Para modelo de optimización (unidades)</p>
         </div>
       </CardContent>
     </Card>
