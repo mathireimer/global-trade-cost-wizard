@@ -20,7 +20,6 @@ const InterrelationAnalysis = ({ costData }: InterrelationAnalysisProps) => {
     'FOB', 'Flete', 'Seguro', 'Aranceles', 'IVA', 'Gastos Aduaneros', 'Costos Operativos'
   ];
 
-  // Análisis de sensibilidad simplificado
   const sensitivityAnalysis = [
     {
       variable: 'Precio FOB',
@@ -161,7 +160,7 @@ const InterrelationAnalysis = ({ costData }: InterrelationAnalysisProps) => {
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="w-3 h-3 bg-gray-200 rounded"></div>
-                    <span>Muy Baja (<0.2)</span>
+                    <span>Muy Baja (&lt;0.2)</span>
                   </div>
                 </div>
               </CardContent>
