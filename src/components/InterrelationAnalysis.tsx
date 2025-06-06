@@ -205,7 +205,6 @@ const InterrelationAnalysis = ({ costData }: InterrelationAnalysisProps) => {
               </CardContent>
             </Card>
 
-            {/* Métricas de Riesgo */}
             <Card className="bg-yellow-50 border-yellow-200">
               <CardHeader>
                 <CardTitle className="text-lg text-yellow-900">Métricas de Riesgo</CardTitle>
